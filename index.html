@@ -417,8 +417,8 @@
         // تهيئة Firebase (modular)
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        const tasksRef = ref(database, 'tasks');
-        const connectedRef = ref(database, '.info/connected');
+        const tasksRef = dbRef(database, 'tasks');
+        const connectedRef = dbRef(database, '.info/connected');
 
         // ======================== قائمة العناصر الجاهزة ========================
         const predefinedItems = [
