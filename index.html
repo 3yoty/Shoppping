@@ -521,7 +521,7 @@
         // ======================== إعداد مستمعي Firebase ========================
         function setupFirebaseListeners() {
             // الاتصال بالقاعدة
-            onValue(ref(database, '.info/connected'), function(snapshot) {
+            onValue(dbRef(database, '.info/connected'), function(snapshot) {
                 const connected = snapshot.val();
                 const statusIndicator = document.getElementById('statusIndicator');
                 
@@ -535,7 +535,7 @@
             });
 
             // تحديث البيانات
-            onValue(ref(database, 'tasks'), function(snapshot) {
+            onValue(dbRef(database, 'tasks'), function(snapshot) {
                 shoppingItems = snapshot.val() || {};
                 renderShoppingList();
             });
