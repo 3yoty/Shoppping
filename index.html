@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة التسوق المشتركة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            color: #4facfe;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-weight: 600;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Cairo', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .predefined-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .item-btn {
+            padding: 12px 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .item-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .manual-add {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .manual-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .add-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+        }
+
+        .shopping-list {
+            min-height: 300px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .list-item:hover {
+            border-color: #4facfe;
+            transform: translateX(-5px);
+        }
+
+        .list-item.completed {
+            background: #f8f9fa;
+            color: #6c757d;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .list-item.completed:hover {
+            transform: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-time {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.4);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #4facfe;
+            background: white;
+            color: #4facfe;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #4facfe;
+            color: white;
+        }
+
+        .clear-all-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .clear-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .status-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .status-connected {
+            background: #28a745;
+        }
+
+        .status-disconnected {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .predefined-items {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .manual-add {
+                flex-direction: column;
+            }
+
+            .filter-controls {
+                justify-content: center;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-size: 1.1em;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .sort-btn {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 6px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-indicator" id="statusIndicator">
+        🔄 جاري الاتصال...
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🛒 قائمة التسوق المشتركة</h1>
+            <p>متزامنة مع Firebase Realtime Database</p>
+        </div>
+
+        <div class="main-content">
+            <!-- قسم العناصر الجاهزة -->
+            <div class="section">
+                <h2>🏪 العناصر الجاهزة</h2>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن المنتجات...">
+                </div>
+
+                <div class="predefined-items" id="predefinedItems">
+                    <!-- سيتم إضافة العناصر هنا بواسطة JavaScript -->
+                </div>
+
+                <div class="manual-add">
+                    <input type="text" class="manual-input" id="manualInput" placeholder="أضف عنصر جديد...">
+                    <button class="add-btn" onclick="addManualItem()">إضافة</button>
+                </div>
+            </div>
+
+            <!-- قسم قائمة التسوق -->
+            <div class="section">
+                <h2>📋 قائمة التسوق الحالية</h2>
+                
+                <div class="filter-controls">
+                    <button class="filter-btn active" data-filter="all">الكل</button>
+                    <button class="filter-btn" data-filter="pending">المتبقي</button>
+                    <button class="filter-btn" data-filter="completed">تم الشراء</button>
+                </div>
+
+                <div class="sort-controls">
+                    <span>ترتيب حسب:</span>
+                    <button class="sort-btn active" data-sort="newest">الأحدث</button>
+                    <button class="sort-btn" data-sort="oldest">الأقدم</button>
+                    <button class="sort-btn" data-sort="name">الاسم</button>
+                </div>
+
+                <div class="shopping-list" id="shoppingList">
+                    <div class="loading">⏳ جاري التحميل...</div>
+                </div>
+
+                <button class="clear-all-btn" onclick="clearAllItems()">🗑️ حذف الكل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // ======================== إعدادات Firebase (modular) ========================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, child, update, remove, off } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPYWUqHa6v28jt496_L6ExtXS_pqSQow4",
+            authDomain: "shopping-d3ea3.firebaseapp.com",
+            databaseURL: "https://shopping-d3ea3-default-rtdb.firebaseio.com",
+            projectId: "shopping-d3ea3",
+            storageBucket: "shopping-d3ea3.firebasestorage.app",
+            messagingSenderId: "434241138137",
+            appId: "1:434241138137:web:ce049431ac46db9b93fdc8",
+            measurementId: "G-STYC586XED"
+        };
+
+        // تهيئة Firebase (modular)
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const tasksRef = ref(database, 'tasks');
+        const connectedRef = ref(database, '.info/connected');
+
+        // ======================== قائمة العناصر الجاهزة ========================
+        const predefinedItems = [
+            'لحمه', 'فراخ', 'لبن', 'مكرونة', 'رز', 'جبنة', 'جبنه رومي', 
+            'عيش', 'عيش فينو', 'معجون طماطم', 'طماطم', 'خيار', 'جزر', 
+            'شبت', 'كزبرة', 'موز', 'تفاح', 'فاكهة'
+        ];
+
+        // ======================== متغيرات التطبيق ========================
+        let shoppingItems = {};
+        let currentFilter = 'all';
+        let currentSort = 'newest';
+
+        // ======================== التهيئة الأولية ========================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPredefinedItems();
+            setupEventListeners();
+            setupFirebaseListeners();
+        });
+
+        // ======================== عرض العناصر الجاهزة ========================
+        function renderPredefinedItems() {
+            const container = document.getElementById('predefinedItems');
+            container.innerHTML = '';
+            
+            predefinedItems.forEach(item => {
+                const button = document.createElement('button');
+                button.className = 'item-btn';
+                button.textContent = item;
+                button.onclick = () => addItemToList(item);
+                container.appendChild(button);
+            });
+        }
+
+        // ======================== البحث في العناصر الجاهزة ========================
+        function setupEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const manualInput = document.getElementById('manualInput');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const items = document.querySelectorAll('.item-btn');
+                
+                items.forEach(item => {
+                    const itemText = item.textContent.toLowerCase();
+                    item.style.display = itemText.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            manualInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addManualItem();
+                }
+            });
+
+            // أحداث التصفية والترتيب
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderShoppingList();
+                });
+            });
+
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSort = this.dataset.sort;
+                    renderShoppingList();
+                });
+            });
+        }
+
+        // ======================== إضافة عنصر يدوي ========================
+        function addManualItem() {
+            const input = document.getElementById('manualInput');
+            const itemName = input.value.trim();
+            
+            if (itemName) {
+                addItemToList(itemName);
+                input.value = '';
+            }
+        }
+
+        // ======================== إضافة عنصر إلى قائمة التسوق ========================
+        function addItemToList(itemName) {
+            const timestamp = Date.now();
+            const newItem = {
+                id: timestamp,
+                name: itemName,
+                completed: false,
+                timestamp: timestamp,
+                dateAdded: new Date().toLocaleString('ar-EG')
+            };
+
+            tasksRef.child(timestamp).set(newItem);
+        }
+
+        // ======================== إعداد مستمعي Firebase ========================
+        function setupFirebaseListeners() {
+            // الاتصال بالقاعدة
+            database.ref('.info/connected').on('value', function(snapshot) {
+                const connected = snapshot.val();
+                const statusIndicator = document.getElementById('statusIndicator');
+                
+                if (connected) {
+                    statusIndicator.textContent = '🟢 متصل';
+                    statusIndicator.className = 'status-indicator status-connected';
+                } else {
+                    statusIndicator.textContent = '🔴 غير متصل';
+                    statusIndicator.className = 'status-indicator status-disconnected';
+                }
+            });
+
+            // تحديث البيانات
+            tasksRef.on('value', function(snapshot) {
+                shoppingItems = snapshot.val() || {};
+                renderShoppingList();
+            });
+        }
+
+        // ======================== عرض قائمة التسوق ========================
+        function renderShoppingList() {
+            const container = document.getElementById('shoppingList');
+            const items = Object.values(shoppingItems);
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state">📝 لا توجد عناصر في القائمة</div>';
+                return;
+            }
+
+            // تطبيق التصفية
+            let filteredItems = items;
+            if (currentFilter === 'pending') {
+                filteredItems = items.filter(item => !item.completed);
+            } else if (currentFilter === 'completed') {
+                filteredItems = items.filter(item => item.completed);
+            }
+
+            // تطبيق الترتيب
+            filteredItems.sort((a, b) => {
+                if (currentSort === 'newest') {
+                    return b.timestamp - a.timestamp;
+                } else if (currentSort === 'oldest') {
+                    return a.timestamp - b.timestamp;
+                } else if (currentSort === 'name') {
+                    return a.name.localeCompare(b.name, 'ar');
+                }
+                return 0;
+            });
+
+            container.innerHTML = '';
+            filteredItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `list-item ${item.completed ? 'completed' : ''}`;
+                itemDiv.onclick = () => toggleItemCompletion(item.id);
+                
+                itemDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-time">${item.dateAdded}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="delete-btn" onclick="deleteItem(${item.id}, event)">حذف</button>
+                    </div>
+                `;
+                
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // ======================== تبديل حالة العنصر ========================
+        function toggleItemCompletion(itemId) {
+            const item = shoppingItems[itemId];
+            if (item) {
+                tasksRef.child(itemId).update({
+                    completed: !item.completed
+                });
+            }
+        }
+
+        // ======================== حذف عنصر ========================
+        function deleteItem(itemId, event) {
+            event.stopPropagation();
+            if (confirm('هل أنت متأكد من حذف هذا العنصر؟')) {
+                tasksRef.child(itemId).remove();
+            }
+        }
+
+        // ======================== حذف جميع العناصر ========================
+        function clearAllItems() {
+            if (confirm('هل أنت متأكد من حذف جميع العناصر؟')) {
+                tasksRef.remove();
+            }
+        }
+    </script>
+</body>
+</html>
